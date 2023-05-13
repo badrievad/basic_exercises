@@ -4,7 +4,6 @@
 names = ['Оля', 'Петя', 'Вася', 'Маша']
 print(*names, sep='\n')
 
-
 # Задание 2
 # Необходимо вывести имена всех учеников из списка, рядом с именем показать количество букв в нём
 # Пример вывода:
@@ -12,8 +11,8 @@ print(*names, sep='\n')
 # Петя: 4
 
 names = ['Оля', 'Петя', 'Вася', 'Маша']
-# ???
-
+for i in names:
+    print(f'{i}: {len(i)}')
 
 # Задание 3
 # Необходимо вывести имена всех учеников из списка, рядом с именем вывести пол ученика
@@ -25,8 +24,8 @@ is_male = {
     'Маша': False,
 }
 names = ['Оля', 'Петя', 'Вася', 'Маша']
-# ???
-
+for i in names:
+    print(f'{i}: {"мужской" if is_male[i] else "женский"}')
 
 # Задание 4
 # Даны группу учеников. Нужно вывести количество групп и для каждой группы – количество учеников в ней
@@ -40,8 +39,21 @@ groups = [
     ['Вася', 'Маша', 'Саша', 'Женя'],
     ['Оля', 'Петя', 'Гриша'],
 ]
-# ???
 
+group_token = lambda group_to: (
+        (group_to in range(5, 20)) and 'групп' or
+        (1 in (group_to, (diglast := group_to % 10))) and 'группа' or
+        ({group_to, diglast} & {2, 3, 4}) and 'группы' or 'групп')
+
+student_token = lambda student_to: (
+        (student_to in range(5, 20)) and 'учеников' or
+        (1 in (student_to, (diglast := student_to % 10))) and 'ученик' or
+        ({student_to, diglast} & {2, 3, 4}) and 'ученика' or 'учеников')
+
+print(f'Всего {len(groups)} {group_token(len(groups))}.')
+
+for key, value in dict(enumerate(groups, start=1)).items():
+    print(f'Группа {key}: {len(value)} {student_token(len(value))}.')
 
 # Задание 5
 # Для каждой пары учеников нужно с новой строки перечислить учеников, которые в неё входят
@@ -54,4 +66,6 @@ groups = [
     ['Оля', 'Петя', 'Гриша'],
     ['Вася', 'Маша', 'Саша', 'Женя'],
 ]
-# ???
+
+for key, value in dict(enumerate(groups, start=1)).items():
+    print(f'Группа {key}:', ", ".join(value))
