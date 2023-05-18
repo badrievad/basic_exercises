@@ -9,7 +9,7 @@ print(word.lower().count('а'))
 # Вывести количество гласных букв в слове
 word = 'Архангельск'
 vowels = 'аеиоуэюяыё'
-print(len([i for i in word.lower() if i in vowels]))
+print(len([letter for letter in word.lower() if letter in vowels]))
 
 # Вывести количество слов в предложении
 sentence = 'Мы приехали в гости'
@@ -17,9 +17,9 @@ print(len(sentence.split()))
 
 # Вывести первую букву каждого слова на отдельной строке
 sentence = 'Мы приехали в гости'
-for i in sentence.split():
-    print(i[0])
+for word in sentence.split():
+    print(word[0])
 
 # Вывести усреднённую длину слова в предложении
 sentence = 'Мы приехали в гости'
-print(int(sum([len(i) for i in sentence.split()]) / len(sentence.split())))
+print(int(sum([len(word) for word in sentence.split()]) / len(sentence.split())))
