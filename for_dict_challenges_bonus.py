@@ -2,9 +2,8 @@ import random
 import uuid
 import datetime
 import lorem
-from collections import Counter
 from itertools import groupby
-
+from collections import Counter
 
 """
 Пожалуйста, приступайте к этой задаче после того, как вы сделали и получили ревью ко всем остальным задачам
@@ -40,6 +39,10 @@ messages = [
 """
 
 
+# Создадим функцию, которая принимает list для нахождения максимального повторяющегося элемента в данном списке
+def maximum_frequency(lst):
+    return Counter(lst).most_common(1)[0][0]
+
 
 def generate_chat_history():
     messages_amount = random.randint(200, 1000)
@@ -70,72 +73,72 @@ def generate_chat_history():
     return messages
 
 
-def task1(messages):
-    users_list = [message['sent_by'] for message in messages]
-    return f'{max(users_list, key=lambda x: users_list.count(x))} - ' \
-           f'айди пользователя, который написал больше всех сообщений'
+# Создает список значений по ключу
+def create_list_by_key(key_name: str, messages):
+    return [message[key_name] for message in messages if message[key_name] is not None]
 
 
-def task2(messages):
-    answers_list = [message['reply_for'] for message in messages if message['reply_for'] is not None]
+def find_id_who_write_the_most_messages(messages):
+    return maximum_frequency(create_list_by_key('sent_by', messages))
+
+
+def find_id_who_got_the_most_replies(messages):
     for message in messages:
-        if message['id'] == max(answers_list, key=lambda x: answers_list.count(x)):
-            return f'{message["sent_by"]} - айди пользователя, на сообщения которого больше всего отвечали'
+        if message['id'] == maximum_frequency(create_list_by_key('reply_for', messages)):
+            return message["sent_by"]
 
 
-def task3(messages):
+def find_id_saw_unique_users(messages):
     id_unique = {}
     for message in messages:
         if message['sent_by'] not in id_unique:
-            id_unique[message['sent_by']] = message['seen_by']
+            id_unique[message['sent_by']] = set(message['seen_by'])
         else:
-            id_unique[message['sent_by']] = id_unique[message['sent_by']] + message['seen_by']
+            id_unique[message['sent_by']] = set(id_unique[message['sent_by']]) | set(message['seen_by'])
 
-    for key, value in id_unique.items():
-        print(f'Сообщения от пользователя под айди {key}, видело {len(set(value))} уникальных пользователей')
+    # создаем переменную с отсортированными айди по убыванию кол-ва просмотров уникальными пользователями
+    sorted_id_user_and_count_saw_users = sorted(id_unique.items(), reverse=True, key=lambda x: len(x[1]))
+    return [id_user for id_user, count in sorted_id_user_and_count_saw_users]
 
 
-def task4(messages):
+def what_time_more_messages(messages):
     times = {
-        'утром (до 12 часов)': [],
-        'днём (12-18 часов)': [],
-        'вечером (после 18 часов)': []
+        'morning': [],
+        'day': [],
+        'evening': []
     }
 
     for message in messages:
-        if float(message["sent_at"].strftime('%H.%M')) < 12:
-            times['утром (до 12 часов)'].append(float(message["sent_at"].strftime('%H.%M')))
-        elif 18 > float(message["sent_at"].strftime('%H.%M')) > 12:
-            times['днём (12-18 часов)'].append(float(message["sent_at"].strftime('%H.%M')))
+        hour_of_writing = message["sent_at"].hour
+        if hour_of_writing < 12:
+            times['morning'].append(hour_of_writing)
+        elif 18 > hour_of_writing > 12:
+            times['day'].append(hour_of_writing)
         else:
-            times['вечером (после 18 часов)'].append(float(message["sent_at"].strftime('%H.%M')))
+            times['evening'].append(hour_of_writing)
 
-    return f'В чате больше всего сообщений: {max(times, key=lambda x: len(times[x]))}'
+    return max(times.items(), key=lambda x: len(x[1]))[0]
 
-def task5(messages):
+
+def maximum_thread_length(messages):
     result = []
 
-    for k, g in groupby([message['reply_for'] for message in messages]):
-        length = len(list(g))
-        result.append((k, length))
+    for id_reply_for, thread_length in groupby(
+            [message['reply_for'] for message in messages if message['reply_for'] is not None]):
+        length = len(list(thread_length))
+        if length > 1:
+            result.append(id_reply_for)
 
-    lst = [(key, value) for key, value in sorted(result, key=lambda x: x[1], reverse=True) if
-           key is not None and value > 1]
+    return result
 
-    if len(lst) > 0:
-        for key, value in lst:
-            print(f'Сообщение под айди: "{key}" стало началом для самых длинных тредов (цепочек ответов), а именно '
-                  f'{value}.')
-    else:
-        print('Максимальная длина тредов (цепочек ответов) составляет 1.')
 
 if __name__ == "__main__":
-    print(task1(generate_chat_history()))
+    print(find_id_who_write_the_most_messages(generate_chat_history()))
     print('_' * 75)
-    print(task2(generate_chat_history()))
+    print(find_id_who_got_the_most_replies(generate_chat_history()))
     print('_' * 75)
-    task3(generate_chat_history())
+    print(find_id_saw_unique_users(generate_chat_history()))
     print('_' * 75)
-    print(task4(generate_chat_history()))
+    print(what_time_more_messages(generate_chat_history()))
     print('_' * 75)
-    task5(generate_chat_history())
+    print(maximum_thread_length(generate_chat_history()))

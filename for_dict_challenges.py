@@ -1,5 +1,5 @@
-import pandas as pd
 from collections import Counter
+
 
 # Задание 1
 # Дан список учеников, нужно посчитать количество повторений каждого имени ученика
@@ -8,6 +8,11 @@ from collections import Counter
 # Маша: 2
 # Петя: 2
 
+# создадим функцию, которая возвращает список студентов по ключу 'first_name'
+def student_list(lst):
+    return [student['first_name'] for student in lst]
+
+
 students = [
     {'first_name': 'Вася'},
     {'first_name': 'Петя'},
@@ -15,12 +20,11 @@ students = [
     {'first_name': 'Маша'},
     {'first_name': 'Петя'},
 ]
-names = []
-for student in students:
-    names.append(student['first_name'])
 
-for key, value in Counter(names).items():
-    print(f'{key}: {value}')
+for name, count_students in Counter(student_list(students)).items():
+    print(f'{name}: {count_students}')
+
+print('_' * 75)
 
 # Задание 2
 # Дан список учеников, нужно вывести самое часто повторящееся имя
@@ -33,14 +37,15 @@ students = [
     {'first_name': 'Маша'},
     {'first_name': 'Оля'},
 ]
-names = []
-for student in students:
-    names.append(student['first_name'])
 
-print('_' * 75)
 
-# print(pd.DataFrame(names).mode()[0][0])
-print(f'Самое частое имя среди учеников: {max(names, key=lambda x: names.count(x))}')
+# Создадим функцию, которая принимает list для нахождения максимального повторяющегося элемента в данном списке
+
+def maximum_frequency(lst):
+    return Counter(lst).most_common(1)[0][0]
+
+
+print(f'Самое частое имя среди учеников: {maximum_frequency(student_list(students))}')
 
 print('_' * 75)
 
@@ -66,15 +71,16 @@ school_students = [
         {'first_name': 'Саша'},
     ],
 ]
-for key, value in dict(enumerate(school_students, start=1)).items():
-    print(f'Самое частое имя в классе {key}: '
-          f'{(lambda x: max([x["first_name"] for x in value], key=lambda y: x.count(y)))(value)}')
+
+for class_number, students in enumerate(school_students, start=1):
+    print(f'Самое частое имя в классе {class_number}: {maximum_frequency(student_list(students))}')
 
 print('_' * 75)
+
 # Задание 4
 # Для каждого класса нужно вывести количество девочек и мальчиков в нём.
 # Пример вывода:
-# Класс 2a: девочки 2, мальчики 0 
+# Класс 2a: девочки 2, мальчики 0
 # Класс 2б: девочки 0, мальчики 2
 
 school = [
@@ -89,10 +95,18 @@ is_male = {
     'Миша': True,
     'Даша': False,
 }
+
+
+def find_girls():
+    return [is_male[girls["first_name"]] for girls in group["students"]].count(False)
+
+
+def find_boys():
+    return [is_male[boys["first_name"]] for boys in group["students"]].count(True)
+
+
 for group in school:
-    print(f'Класс {group["class"]}: девочки '
-          f'{(lambda x: [is_male[x["first_name"]] for x in group["students"]])(group).count(False)}, мальчики '
-          f'{(lambda x: [is_male[x["first_name"]] for x in group["students"]])(group).count(True)}')
+    print(f'Класс {group["class"]}: девочки {find_girls()}, мальчики {find_boys()}')
 
 print('_' * 75)
 
@@ -112,13 +126,8 @@ is_male = {
     'Олег': True,
     'Миша': True,
 }
-girls_boys = []
 for group in school:
-    girls_boys.append({
-        'class': group['class'],
-        'girls': (lambda x: [is_male[x["first_name"]] for x in group["students"]])(group).count(False),
-        'boys': (lambda x: [is_male[x["first_name"]] for x in group["students"]])(group).count(True)
-    })
-
-print(f"Больше всего мальчиков в классе: {max(girls_boys, key=lambda x: x['boys'])['class']}")
-print(f"Больше всего девочек в классе: {max(girls_boys, key=lambda x: x['girls'])['class']}")
+    if find_boys() > find_girls():
+        print(f'Больше всего мальчиков в классе: {group["class"]}')
+    else:
+        print(f'Больше всего девочек в классе: {group["class"]}')

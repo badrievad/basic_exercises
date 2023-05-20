@@ -40,20 +40,28 @@ groups = [
     ['Оля', 'Петя', 'Гриша'],
 ]
 
-group_token = lambda group_to: (
-        (group_to in range(5, 20)) and 'групп' or
-        (1 in (group_to, (diglast := group_to % 10))) and 'группа' or
-        ({group_to, diglast} & {2, 3, 4}) and 'группы' or 'групп')
+def singular_and_plural_noun_group(numb):
+    if numb in range(5, 20):
+        return 'групп'
+    elif 1 in (numb, (diglast := numb % 10)):
+        return 'группа'
+    elif {numb, diglast} & {2, 3, 4}:
+        return 'группы'
+    return 'групп'
 
-student_token = lambda student_to: (
-        (student_to in range(5, 20)) and 'учеников' or
-        (1 in (student_to, (diglast := student_to % 10))) and 'ученик' or
-        ({student_to, diglast} & {2, 3, 4}) and 'ученика' or 'учеников')
+def singular_and_plural_noun_student(numb):
+    if numb in range(5, 20):
+        return 'учеников'
+    elif 1 in (numb, (diglast := numb % 10)):
+        return 'ученик'
+    elif {numb, diglast} & {2, 3, 4}:
+        return 'ученика'
+    return 'учеников'
 
-print(f'Всего {len(groups)} {group_token(len(groups))}.')
+print(f'Всего {len(groups)} {singular_and_plural_noun_group(len(groups))}.')
 
-for key, value in dict(enumerate(groups, start=1)).items():
-    print(f'Группа {key}: {len(value)} {student_token(len(value))}.')
+for group_number, group in enumerate(groups, start=1):
+    print(f'Группа {group_number}: {len(group)} {singular_and_plural_noun_student(len(group))}.')
 
 # Задание 5
 # Для каждой пары учеников нужно с новой строки перечислить учеников, которые в неё входят
@@ -67,5 +75,5 @@ groups = [
     ['Вася', 'Маша', 'Саша', 'Женя'],
 ]
 
-for key, value in dict(enumerate(groups, start=1)).items():
-    print(f'Группа {key}:', ", ".join(value))
+for group_number, group in enumerate(groups, start=1):
+    print(f'Группа {group_number}: {", ".join(group)}')
