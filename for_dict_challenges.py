@@ -40,7 +40,6 @@ students = [
 
 
 # Создадим функцию, которая принимает list для нахождения максимального повторяющегося элемента в данном списке
-
 def maximum_frequency(lst):
     return Counter(lst).most_common(1)[0][0]
 
