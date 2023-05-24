@@ -40,7 +40,9 @@ groups = [
     ['Оля', 'Петя', 'Гриша'],
 ]
 
-def singular_and_plural_noun_group(numb):
+
+# функция принимает число и изменяет существительное "группа" в зависимости от переданного аргумента
+def singular_and_plural_noun_group(numb: int):
     if numb in range(5, 20):
         return 'групп'
     elif 1 in (numb, (diglast := numb % 10)):
@@ -49,7 +51,9 @@ def singular_and_plural_noun_group(numb):
         return 'группы'
     return 'групп'
 
-def singular_and_plural_noun_student(numb):
+
+# функция принимает число и изменяет существительное "ученик" в зависимости от переданного аргумента
+def singular_and_plural_noun_student(numb: int):
     if numb in range(5, 20):
         return 'учеников'
     elif 1 in (numb, (diglast := numb % 10)):
@@ -57,6 +61,7 @@ def singular_and_plural_noun_student(numb):
     elif {numb, diglast} & {2, 3, 4}:
         return 'ученика'
     return 'учеников'
+
 
 print(f'Всего {len(groups)} {singular_and_plural_noun_group(len(groups))}.')
 
