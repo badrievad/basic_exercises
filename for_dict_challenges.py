@@ -9,8 +9,8 @@ from collections import Counter
 # Петя: 2
 
 # создадим функцию, которая возвращает список студентов по ключу 'first_name'
-def student_list(lst):
-    return [student['first_name'] for student in lst]
+def get_students_first_names(student_list):
+    return [student['first_name'] for student in student_list]
 
 
 students = [
@@ -21,7 +21,7 @@ students = [
     {'first_name': 'Петя'},
 ]
 
-for name, count_students in Counter(student_list(students)).items():
+for name, count_students in Counter(get_students_first_names(students)).items():
     print(f'{name}: {count_students}')
 
 print('_' * 75)
@@ -44,7 +44,7 @@ def maximum_frequency(lst):
     return Counter(lst).most_common(1)[0][0]
 
 
-print(f'Самое частое имя среди учеников: {maximum_frequency(student_list(students))}')
+print(f'Самое частое имя среди учеников: {maximum_frequency(get_students_first_names(students))}')
 
 print('_' * 75)
 
@@ -72,15 +72,24 @@ school_students = [
 ]
 
 for class_number, students in enumerate(school_students, start=1):
-    print(f'Самое частое имя в классе {class_number}: {maximum_frequency(student_list(students))}')
+    print(f'Самое частое имя в классе {class_number}: {maximum_frequency(get_students_first_names(students))}')
 
 print('_' * 75)
+
 
 # Задание 4
 # Для каждого класса нужно вывести количество девочек и мальчиков в нём.
 # Пример вывода:
 # Класс 2a: девочки 2, мальчики 0
 # Класс 2б: девочки 0, мальчики 2
+
+def find_count_girls():
+    return [is_male[girls["first_name"]] for girls in group["students"]].count(False)
+
+
+def find_count_boys():
+    return [is_male[boys["first_name"]] for boys in group["students"]].count(True)
+
 
 school = [
     {'class': '2a', 'students': [{'first_name': 'Маша'}, {'first_name': 'Оля'}]},
@@ -95,17 +104,8 @@ is_male = {
     'Даша': False,
 }
 
-
-def find_girls():
-    return [is_male[girls["first_name"]] for girls in group["students"]].count(False)
-
-
-def find_boys():
-    return [is_male[boys["first_name"]] for boys in group["students"]].count(True)
-
-
 for group in school:
-    print(f'Класс {group["class"]}: девочки {find_girls()}, мальчики {find_boys()}')
+    print(f'Класс {group["class"]}: девочки {find_count_girls()}, мальчики {find_count_boys()}')
 
 print('_' * 75)
 
@@ -125,8 +125,13 @@ is_male = {
     'Олег': True,
     'Миша': True,
 }
+
+list_with_classes_and_boys = []
+list_with_classes_and_girls = []
+
 for group in school:
-    if find_boys() > find_girls():
-        print(f'Больше всего мальчиков в классе: {group["class"]}')
-    else:
-        print(f'Больше всего девочек в классе: {group["class"]}')
+    list_with_classes_and_girls.append((group["class"], find_count_girls()))
+    list_with_classes_and_boys.append((group["class"], find_count_boys()))
+
+print(f"Больше всего девочек в классе {max(list_with_classes_and_girls, key=lambda x: x[1])[0]}")
+print(f"Больше всего мальчиков в классе {max(list_with_classes_and_boys, key=lambda x: x[1])[0]}")
