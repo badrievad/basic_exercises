@@ -83,12 +83,12 @@ print('_' * 75)
 # Класс 2a: девочки 2, мальчики 0
 # Класс 2б: девочки 0, мальчики 2
 
-def find_count_girls():
-    return [is_male[girls["first_name"]] for girls in group["students"]].count(False)
+def find_count_girls(students_group):
+    return [is_male[girls["first_name"]] for girls in students_group["students"]].count(False)
 
 
-def find_count_boys():
-    return [is_male[boys["first_name"]] for boys in group["students"]].count(True)
+def find_count_boys(students_group):
+    return [is_male[boys["first_name"]] for boys in students_group["students"]].count(True)
 
 
 school = [
@@ -105,7 +105,7 @@ is_male = {
 }
 
 for group in school:
-    print(f'Класс {group["class"]}: девочки {find_count_girls()}, мальчики {find_count_boys()}')
+    print(f'Класс {group["class"]}: девочки {find_count_girls(group)}, мальчики {find_count_boys(group)}')
 
 print('_' * 75)
 
@@ -130,8 +130,8 @@ list_with_classes_and_boys = []
 list_with_classes_and_girls = []
 
 for group in school:
-    list_with_classes_and_girls.append((group["class"], find_count_girls()))
-    list_with_classes_and_boys.append((group["class"], find_count_boys()))
+    list_with_classes_and_girls.append((group["class"], find_count_girls(group)))
+    list_with_classes_and_boys.append((group["class"], find_count_boys(group)))
 
 print(f"Больше всего девочек в классе {max(list_with_classes_and_girls, key=lambda x: x[1])[0]}")
 print(f"Больше всего мальчиков в классе {max(list_with_classes_and_boys, key=lambda x: x[1])[0]}")
