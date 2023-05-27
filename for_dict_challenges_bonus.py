@@ -91,33 +91,33 @@ def find_id_who_got_the_most_replies(messages):
 def find_id_saw_unique_users(messages):
     id_unique = {}
     for message in messages:
-        if message['sent_by'] not in id_unique:
-            id_unique[message['sent_by']] = set(message['seen_by'])
-        else:
-            id_unique[message['sent_by']] = set(id_unique[message['sent_by']]) | set(message['seen_by'])
+        id_unique.setdefault(message['sent_by'], set()).update(message['seen_by'])
 
-    # создаем переменную с отсортированными айди по убыванию кол-ва просмотров уникальными пользователями
+    # создаем список с отсортированными айди по убыванию кол-ва просмотров уникальными пользователями
     sorted_id_user_and_count_saw_users = sorted(id_unique.items(), reverse=True, key=lambda x: len(x[1]))
     return [id_user for id_user, count in sorted_id_user_and_count_saw_users]
 
 
 def what_time_more_messages(messages):
-    times = {
-        'morning': [],
-        'day': [],
-        'evening': []
-    }
+    morning, day, evening = [], [], []
 
     for message in messages:
         hour_of_writing = message["sent_at"].hour
         if hour_of_writing < 12:
-            times['morning'].append(hour_of_writing)
+            morning.append(hour_of_writing)
         elif 18 > hour_of_writing > 12:
-            times['day'].append(hour_of_writing)
+            day.append(hour_of_writing)
         else:
-            times['evening'].append(hour_of_writing)
+            evening.append(hour_of_writing)
 
-    return max(times.items(), key=lambda x: len(x[1]))[0]
+    max_messages = max([len(message) for message in [morning, day, evening]])
+
+    if len(morning) == max_messages:
+        return 'morning'
+    elif len(day) == max_messages:
+        return 'day'
+    else:
+        return 'evening'
 
 
 def maximum_thread_length(messages):
